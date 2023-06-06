@@ -131,7 +131,7 @@ void _start(void) {
 		framebuffer->address += 20;
 	}
 	// uncomment me to draw full screen
-		// draw_rectangle(framebuffer, 1024, 876, 0xffffff);
+		// draw_rectangle(framebuffer, 1024, 876, 0xffffff); // looks like we have a 1024x876 res
 	// print_square(framebuffer, 20, 0xFF7518);
     // We're done, just hang...
     hcf();
