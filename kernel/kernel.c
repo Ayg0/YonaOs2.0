@@ -1,6 +1,4 @@
-#include <stdint.h>
-#include <stddef.h>
-#include <limine.h>
+# include "general.h"
 
 // The Limine requests can be placed anywhere, but it is important that
 // the compiler does not optimise them away, so, usually, they should
@@ -86,15 +84,55 @@ void _start(void) {
         hcf();
     }
 
-    // Fetch the first framebuffer.
+	// Fetch the first framebuffer.
     struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
-
+	uint64_t count = framebuffer->width;
     // Note: we assume the framebuffer model is RGB with 32-bit pixels.
-    for (size_t i = 0; i < 100; i++) {
-        uint32_t *fb_ptr = framebuffer->address;
-        fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
-    }
-
+	while (count > 0)	// loop to check what's the resulotion of the screen;
+	{
+		switch (count % 10)
+		{
+		case 0:
+			draw_square(framebuffer, 20, 0xffffff); // white
+			break;
+		case 1:
+			draw_square(framebuffer, 20, 0xff0000); // red
+			break;
+		case 2:
+			draw_square(framebuffer, 20, 0x0000ff); // blue
+			break;
+		case 3:
+			draw_square(framebuffer, 20, 0x00ff00); // green
+			break;
+		case 4:
+			draw_square(framebuffer, 20, 0xffff00); // yellow
+			break;
+		case 5:
+			draw_square(framebuffer, 20, 0x00ffff); // sky blue
+			break;
+		case 6:
+			draw_square(framebuffer, 20, 0xff00ff); // pink
+			break;
+		case 7:
+			draw_square(framebuffer, 20, 0x660066); // purple
+			break;
+		case 8:
+			draw_square(framebuffer, 20, 0xa0a0a0); // grey
+			break;
+		case 9:
+			draw_square(framebuffer, 20, 0xff7518); // orange
+			break;
+		default:
+			break;
+		}	
+		count /= 10;
+		framebuffer->address += 20;
+		draw_square(framebuffer, 20, 0x000000); // black to separate
+		framebuffer->address += 20;
+	}
+	// uncomment me to draw full screen
+		// draw_rectangle(framebuffer, 1024, 876, 0xffffff);
+	// print_square(framebuffer, 20, 0xFF7518);
     // We're done, just hang...
     hcf();
 }
