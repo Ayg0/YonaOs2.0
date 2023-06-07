@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <limine.h>
 
+// right now screen is 1024x876
+
 typedef struct cursor{
 	int	x;
 	int	y;
@@ -21,4 +23,6 @@ void	draw_square(struct limine_framebuffer *framebuffer, uint32_t size, uint32_t
 void	draw_rectangle(struct limine_framebuffer *framebuffer, uint32_t width, uint32_t hight, uint32_t color);
 int		k_put_char(uint8_t c, int use_default, int color);
 int		init_screen(struct limine_framebuffer *buffer);
+int		k_put_str(char *str);
+int		set_curser(int x, int y);
 #endif

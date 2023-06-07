@@ -74,6 +74,9 @@ clean:
 	rm -rf iso_root $(IMAGE_NAME).iso $(IMAGE_NAME).hdd
 	$(MAKE) -C kernel clean
 
+.PHONY: re
+re:	clean all
+
 .PHONY: distclean
 distclean: clean
 	rm -rf limine ovmf

@@ -2592,5 +2592,31 @@ int	k_put_char(uint8_t c, int use_default, int color){
 			if (char_base[i] & (1 << j))
 				k_put_pixel((screen.cursor.x * 8) + (7 - j), (screen.cursor.y * 8) + i, screen.def_color);
 		}
+	return (0);
+}
+
+int	set_curser(int x, int y){
+	if (x >= 128 || y >= 109)
+		return (1);
+	screen.cursor.x = x;
+	screen.cursor.y = y;
+	return (0);
+}
+
+int	k_put_str(char *str){
+	int	i = 0;
+
+	while (str[i])
+	{
+		if (screen.cursor.x >= 128){
+			screen.cursor.y += 1;
+			screen.cursor.x = 0;
+		}
+		if (screen.cursor.y >= 109)
+			screen.cursor.y = 0;
+		k_put_char(str[i], 1, 0);
+		i++;
+		screen.cursor.x++;
+	}
 	
 }
