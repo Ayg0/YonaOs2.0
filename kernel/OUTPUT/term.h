@@ -25,4 +25,5 @@ int		k_put_char(uint8_t c, int use_default, int color);
 int		init_screen(struct limine_framebuffer *buffer);
 int		k_put_str(char *str);
 int		set_curser(int x, int y);
+void	put_nbr(uint64_t nbr, uint8_t format);
 #endif

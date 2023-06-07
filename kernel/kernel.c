@@ -85,5 +85,11 @@ void _start(void) {
 	k_put_str("Hello guys first test of the NEW YONA");
 	set_curser(0, 1);
 	k_put_str("Hello guys first test of the NEW YONA");
+	set_curser(0, 2);
+	put_nbr(15, 'd');
+	set_curser(0, 3);
+	put_nbr(16, 'h');
+	set_curser(0, 4);
+	put_nbr(5, 'b');
     hcf();
 }

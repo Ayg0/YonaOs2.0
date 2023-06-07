@@ -2586,12 +2586,19 @@ uint8_t * get_font_array()
 int	k_put_char(uint8_t c, int use_default, int color){
 	uint8_t *char_base = get_font_array();
 	char_base += c * 8;
+	if (screen.cursor.x >= 128){
+		screen.cursor.y += 1;
+		screen.cursor.x = 0;
+	}
+	if (screen.cursor.y >= 109)
+		screen.cursor.y = 0;
 	for (int i = 0; i < 8; i++)
 		for (int j = 7; j >= 0; j--)
 		{
 			if (char_base[i] & (1 << j))
 				k_put_pixel((screen.cursor.x * 8) + (7 - j), (screen.cursor.y * 8) + i, screen.def_color);
 		}
+	screen.cursor.x++;
 	return (0);
 }
 
@@ -2603,20 +2610,28 @@ int	set_curser(int x, int y){
 	return (0);
 }
 
+int	put_nbr_base(uint64_t nbr, char *s, uint8_t base_len){
+	if (nbr >= base_len)
+		put_nbr_base(nbr / base_len, s, base_len);
+	k_put_char(s[nbr % base_len], 1, 0);
+	return (7);
+}
+
+void put_nbr(uint64_t nbr, uint8_t format){
+	char *hex = "0123456789ABCDEF";
+	char *decimal = "0123456789";
+	char *binary = "01";
+
+	format == 'h' && k_put_str("0x") && put_nbr_base(nbr, hex, 16);
+	format == 'd' && put_nbr_base(nbr, decimal, 10);
+	format == 'b' && put_nbr_base(nbr, binary, 2);
+	return ;
+}
+
 int	k_put_str(char *str){
 	int	i = 0;
 
 	while (str[i])
-	{
-		if (screen.cursor.x >= 128){
-			screen.cursor.y += 1;
-			screen.cursor.x = 0;
-		}
-		if (screen.cursor.y >= 109)
-			screen.cursor.y = 0;
-		k_put_char(str[i], 1, 0);
-		i++;
-		screen.cursor.x++;
-	}
-	
+		k_put_char(str[i++], 1, 0);
+	return (1);
 }
