@@ -9,6 +9,8 @@ static volatile struct limine_framebuffer_request framebuffer_request = {
     .revision = 0
 };
 
+_screen screen;
+
 // GCC and Clang reserve the right to generate calls to the following
 // 4 functions even if they are not directly called.
 // Implement them as the C specification mandates.
@@ -86,50 +88,51 @@ void _start(void) {
 
 	// Fetch the first framebuffer.
     struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
-	uint64_t count = framebuffer->width;
     // Note: we assume the framebuffer model is RGB with 32-bit pixels.
-	while (count > 0)	// loop to check what's the resulotion of the screen;
-	{
-		switch (count % 10)
-		{
-		case 0:
-			draw_square(framebuffer, 20, 0xffffff); // white
-			break;
-		case 1:
-			draw_square(framebuffer, 20, 0xff0000); // red
-			break;
-		case 2:
-			draw_square(framebuffer, 20, 0x0000ff); // blue
-			break;
-		case 3:
-			draw_square(framebuffer, 20, 0x00ff00); // green
-			break;
-		case 4:
-			draw_square(framebuffer, 20, 0xffff00); // yellow
-			break;
-		case 5:
-			draw_square(framebuffer, 20, 0x00ffff); // sky blue
-			break;
-		case 6:
-			draw_square(framebuffer, 20, 0xff00ff); // pink
-			break;
-		case 7:
-			draw_square(framebuffer, 20, 0x660066); // purple
-			break;
-		case 8:
-			draw_square(framebuffer, 20, 0xa0a0a0); // grey
-			break;
-		case 9:
-			draw_square(framebuffer, 20, 0xff7518); // orange
-			break;
-		default:
-			break;
-		}	
-		count /= 10;
-		framebuffer->address += 20;
-		draw_square(framebuffer, 20, 0x000000); // black to separate
-		framebuffer->address += 20;
-	}
+	// while (count > 0)	// loop to check what's the resulotion of the screen;
+	// {
+	// 	switch (count % 10)
+	// 	{
+	// 	case 0:
+	// 		draw_square(framebuffer, 20, 0xffffff); // white
+	// 		break;
+	// 	case 1:
+	// 		draw_square(framebuffer, 20, 0xff0000); // red
+	// 		break;
+	// 	case 2:
+	// 		draw_square(framebuffer, 20, 0x0000ff); // blue
+	// 		break;
+	// 	case 3:
+	// 		draw_square(framebuffer, 20, 0x00ff00); // green
+	// 		break;
+	// 	case 4:
+	// 		draw_square(framebuffer, 20, 0xffff00); // yellow
+	// 		break;
+	// 	case 5:
+	// 		draw_square(framebuffer, 20, 0x00ffff); // sky blue
+	// 		break;
+	// 	case 6:
+	// 		draw_square(framebuffer, 20, 0xff00ff); // pink
+	// 		break;
+	// 	case 7:
+	// 		draw_square(framebuffer, 20, 0x660066); // purple
+	// 		break;
+	// 	case 8:
+	// 		draw_square(framebuffer, 20, 0xa0a0a0); // grey
+	// 		break;
+	// 	case 9:
+	// 		draw_square(framebuffer, 20, 0xff7518); // orange
+	// 		break;
+	// 	default:
+	// 		break;
+	// 	}	
+	// 	count /= 10;
+	// 	framebuffer->address += 20 * 4;
+	// 	draw_square(framebuffer, 20, 0x000000); // black to separate
+	// 	framebuffer->address += 20 * 4;
+	// }
+	init_screen(framebuffer);
+	k_put_char('c', 1, 0xffffff);
 	// uncomment me to draw full screen
 		// draw_rectangle(framebuffer, 1024, 876, 0xffffff); // looks like we have a 1024x876 res
 	// print_square(framebuffer, 20, 0xFF7518);
