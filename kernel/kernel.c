@@ -9,7 +9,7 @@ static volatile struct limine_framebuffer_request framebuffer_request = {
     .revision = 0
 };
 
-_screen screen;
+_terminal terminal;
 
 // GCC and Clang reserve the right to generate calls to the following
 // 4 functions even if they are not directly called.
@@ -81,15 +81,10 @@ void _start(void) {
         hcf();
     }
     struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
-	init_screen(framebuffer);
-	k_put_str("Hello guys first test of the NEW YONA");
-	set_curser(0, 1);
-	k_put_str("Hello guys first test of the NEW YONA");
-	set_curser(0, 2);
-	put_nbr(15, 'd');
-	set_curser(0, 3);
-	put_nbr(16, 'h');
-	set_curser(0, 4);
-	put_nbr(5, 'b');
+	init_terminal(framebuffer);
+	set_curser(0, TERMH - 1);
+	k_put_char('a', 1, 0);
+	set_curser(0, TERMH);
+	k_put_char('b', 1, 0);
     hcf();
 }

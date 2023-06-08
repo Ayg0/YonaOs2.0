@@ -1,17 +1,17 @@
 #include "term.h"
-extern _screen screen;
+extern _terminal terminal;
 
-int	init_screen(struct limine_framebuffer *buffer){
-	screen.buffer = buffer;
-	screen.cursor.x = 0;
-	screen.cursor.y = 0;
-	screen.def_color = 0xffffff;
+int	init_terminal(struct limine_framebuffer *buffer){
+	terminal.buffer = buffer;
+	terminal.cursor.x = 0;
+	terminal.cursor.y = 0;
+	terminal.def_color = 0xffffff;
 	return 0;
 }
 
 int k_put_pixel(int x, int y, int color){
-	uint32_t *ptr = screen.buffer->address;
-	ptr[y * screen.buffer->width + x] = color;
+	uint32_t *ptr = terminal.buffer->address;
+	ptr[y * terminal.buffer->width + x] = color;
 	return 0;
 }
 
@@ -2586,27 +2586,35 @@ uint8_t * get_font_array()
 int	k_put_char(uint8_t c, int use_default, int color){
 	uint8_t *char_base = get_font_array();
 	char_base += c * 8;
-	if (screen.cursor.x >= 128){
-		screen.cursor.y += 1;
-		screen.cursor.x = 0;
-	}
-	if (screen.cursor.y >= 109)
-		screen.cursor.y = 0;
 	for (int i = 0; i < 8; i++)
 		for (int j = 7; j >= 0; j--)
 		{
 			if (char_base[i] & (1 << j))
-				k_put_pixel((screen.cursor.x * 8) + (7 - j), (screen.cursor.y * 8) + i, screen.def_color);
+				k_put_pixel((terminal.cursor.x * 8) + (7 - j), (terminal.cursor.y * 8) + i, terminal.def_color);
 		}
-	screen.cursor.x++;
+	terminal.cursor.x++;
+	set_curser(terminal.cursor.x, terminal.cursor.y);
 	return (0);
 }
 
+int scroll(){
+	for (int i = 1; i <= TERMH; i++)
+		memcpy(&terminal.buffer->address[TERMH - i - 1], &terminal.buffer->address[TERMH - i], 8192);
+	set_curser(0, TERMH - 1);
+}
+
 int	set_curser(int x, int y){
-	if (x >= 128 || y >= 109)
-		return (1);
-	screen.cursor.x = x;
-	screen.cursor.y = y;
+	if (terminal.cursor.x >= TERMH){
+		terminal.cursor.y += 1;
+		terminal.cursor.x = 0;
+		return 1;
+	}
+	if (terminal.cursor.y >= TERMW){
+		scroll();
+		return 1;
+	}
+	terminal.cursor.x = x;
+	terminal.cursor.y = y;
 	return (0);
 }
 
@@ -2631,7 +2639,10 @@ void put_nbr(uint64_t nbr, uint8_t format){
 int	k_put_str(char *str){
 	int	i = 0;
 
-	while (str[i])
+	while (str[i]){
+		if (str[i] == '\r')
+			set_curser(0, terminal.cursor.y);
 		k_put_char(str[i++], 1, 0);
+	}
 	return (1);
 }
