@@ -24,9 +24,9 @@ void *memcpy(void *dest, const void *src, size_t n) {
     for (size_t i = 0; i < n; i++) {
         pdest[i] = psrc[i];
     }
-
     return dest;
 }
+
 
 void *memset(void *s, int c, size_t n) {
     uint8_t *p = (uint8_t *)s;
@@ -84,7 +84,12 @@ void _start(void) {
 	init_terminal(framebuffer);
 	set_curser(0, TERMH - 1);
 	k_put_char('a', 1, 0);
+	k_put_char(' ', 1, 0);
 	set_curser(0, TERMH);
-	k_put_char('b', 1, 0);
+	k_put_char('d', 1, 0);
+	k_put_char('d', 1, 0);
+	k_put_char('d', 1, 0);
+	k_put_char('d', 1, 0);
+	k_put_char('d', 1, 0);
     hcf();
 }

@@ -1,10 +1,10 @@
 #ifndef TERM_H
 # define TERM_H
 
-#include <stdint.h>
-#include <stddef.h>
-#include <limine.h>
-
+# include <stdint.h>
+# include <stddef.h>
+# include <limine.h>
+# include "LIBT/libt.h"
 // right now screen is 1024x768
 
 # define TERMH 96

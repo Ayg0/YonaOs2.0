@@ -2598,19 +2598,22 @@ int	k_put_char(uint8_t c, int use_default, int color){
 }
 
 int scroll(){
-	for (int i = 1; i <= TERMH; i++)
-		memcpy(&terminal.buffer->address[TERMH - i - 1], &terminal.buffer->address[TERMH - i], 8192);
-	set_curser(0, TERMH - 1);
+	for (int i = 0; i < TERMH - 1; i++){
+		memcpy(&((char *)terminal.buffer->address)[i * 32768], &((char *)terminal.buffer->address)[(i + 1)*32768], 32768);
+	}
+	return 0;
 }
 
 int	set_curser(int x, int y){
-	if (terminal.cursor.x >= TERMH){
+	if (terminal.cursor.x >= TERMW){
 		terminal.cursor.y += 1;
 		terminal.cursor.x = 0;
 		return 1;
 	}
-	if (terminal.cursor.y >= TERMW){
+	if (terminal.cursor.y >= TERMH){
 		scroll();
+		terminal.cursor.x = 0;
+		terminal.cursor.y -= 1;
 		return 1;
 	}
 	terminal.cursor.x = x;
